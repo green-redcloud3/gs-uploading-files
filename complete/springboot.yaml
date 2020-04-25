@@ -8,28 +8,28 @@ items:
   kind: DeploymentConfig
   metadata:
     labels:
-      app: green-redcloud3-gs-uploading-files
-      chart: green-redcloud3-gs-uploading-files-0.0.1
+      app: green-redcloud3-gs-uploading-files-__BRANCH__
+      chart: green-redcloud3-gs-uploading-files-__BRANCH__-0.0.1
       heritage: Tiller
-      release: green-redcloud3-gs-uploading-files
-    name: green-redcloud3-gs-uploading-files
+      release: green-redcloud3-gs-uploading-files-__BRANCH__
+    name: green-redcloud3-gs-uploading-files-__BRANCH__
     namespace: __PROJECT__
   spec:
     replicas: 1
     selector:
-      deploymentconfig: green-redcloud3-gs-uploading-files
+      deploymentconfig: green-redcloud3-gs-uploading-files-__BRANCH__
     template:
       metadata:
         labels:
-          app: green-redcloud3-gs-uploading-files
-          release: green-redcloud3-gs-uploading-files
-          deploymentconfig: green-redcloud3-gs-uploading-files
+          app: green-redcloud3-gs-uploading-files-__BRANCH__
+          release: green-redcloud3-gs-uploading-files-__BRANCH__
+          deploymentconfig: green-redcloud3-gs-uploading-files-__BRANCH__
           version: v1
       spec:
         imagePullSecrets:
         - name: docker-registry-credentials
         containers:
-          - name: green-redcloud3-gs-uploading-files
+          - name: green-redcloud3-gs-uploading-files-__BRANCH__
             image: "__IMAGE_TAG__"
             imagePullPolicy: "Always"
             ports:
@@ -51,12 +51,12 @@ items:
   kind: Service
   metadata:
     labels:
-      app: green-redcloud3-gs-uploading-files
-      chart: green-redcloud3-gs-uploading-files-0.0.1
+      app: green-redcloud3-gs-uploading-files-__BRANCH__
+      chart: green-redcloud3-gs-uploading-files-__BRANCH__-0.0.1
       heritage: Tiller
-      release: green-redcloud3-gs-uploading-files
+      release: green-redcloud3-gs-uploading-files-__BRANCH__
       version: v1
-    name: green-redcloud3-gs-uploading-files
+    name: green-redcloud3-gs-uploading-files-__BRANCH__
     namespace: __PROJECT__
   spec:
     type: "ClusterIP"
@@ -66,8 +66,8 @@ items:
         protocol: TCP
         targetPort: 8080
     selector:
-      app: green-redcloud3-gs-uploading-files
-      release: green-redcloud3-gs-uploading-files
+      app: green-redcloud3-gs-uploading-files-__BRANCH__
+      release: green-redcloud3-gs-uploading-files-__BRANCH__
 
 - apiVersion: extensions/v1beta1
   kind: Ingress
@@ -75,16 +75,16 @@ items:
     annotations:
       haproxy.router.openshift.io/timeout: 11m
     labels:
-      app: __PROJECT__-green-redcloud3-gs-uploading-files
-    name: __PROJECT__-green-redcloud3-gs-uploading-files
+      app: __PROJECT__-green-redcloud3-gs-uploading-files-__BRANCH__
+    name: __PROJECT__-green-redcloud3-gs-uploading-files-__BRANCH__
     namespace: istio-system
   spec:
     tls:
     - hosts:
-      - "green-redcloud3-gs-uploading-files.__PROJECT__.green.perspectatechdemos.com"
+      - "green-redcloud3-gs-uploading-files-__BRANCH__.__PROJECT__.green.perspectatechdemos.com"
       secretName: "green-perspectatechdemos-com-crt"
     rules:
-    - host: green-redcloud3-gs-uploading-files.__PROJECT__.green.perspectatechdemos.com
+    - host: green-redcloud3-gs-uploading-files-__BRANCH__.__PROJECT__.green.perspectatechdemos.com
       http:
         paths:
         - path: /
@@ -95,11 +95,11 @@ items:
 - apiVersion: networking.istio.io/v1alpha3
   kind: VirtualService
   metadata:
-    name: green-redcloud3-gs-uploading-files
+    name: green-redcloud3-gs-uploading-files-__BRANCH__
     namespace: __PROJECT__
   spec:
     hosts:
-    - "green-redcloud3-gs-uploading-files.__PROJECT__.green.perspectatechdemos.com"
+    - "green-redcloud3-gs-uploading-files-__BRANCH__.__PROJECT__.green.perspectatechdemos.com"
     gateways:
     - __PROJECT__-istio-gateway
     http:
@@ -108,17 +108,17 @@ items:
           prefix: /
       route:
       - destination:
-          host: green-redcloud3-gs-uploading-files
+          host: green-redcloud3-gs-uploading-files-__BRANCH__
           port:
             number: 80
 
 - apiVersion: networking.istio.io/v1alpha3
   kind: DestinationRule
   metadata:
-    name: green-redcloud3-gs-uploading-files
+    name: green-redcloud3-gs-uploading-files-__BRANCH__
     namespace: __PROJECT__
   spec:
-    host: green-redcloud3-gs-uploading-files
+    host: green-redcloud3-gs-uploading-files-__BRANCH__
     subsets:
     - name: v1
       labels:
