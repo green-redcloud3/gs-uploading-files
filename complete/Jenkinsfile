@@ -151,29 +151,7 @@ spec:
         // mattermostSend channel: "${MATTERMOST_CHANNEL}", endpoint: "${MATTERMOST_WEBHOOK}", message: "Job: ${JOB_NAME} \nStage: ${STAGE_NAME}\nBuild: ${BUILD_URL}\nCommit: ${GITHUB_PROJECT_URL}"
       }
     }
-    stage('SAST') {
-      steps {
-        container('maven') {
-          dir('complete') {
-            withSonarQubeEnv('sonarqube') { 
-            sh "mvn compile && mvn sonar:sonar -Dsonar.projectKey=${GITHUB_GROUP}-${GITHUB_PROJECT}-${BRANCH_NAME} -Dsonar.projectName=${GITHUB_GROUP}-${GITHUB_PROJECT}-${BRANCH_NAME}"
-            }
-          }
-        }
-        mattermostSend channel: "${MATTERMOST_CHANNEL}", endpoint: "${MATTERMOST_WEBHOOK}", message: "Job: ${JOB_NAME} \nStage: ${STAGE_NAME}\nBuild: ${BUILD_URL}\nCommit: ${GITHUB_PROJECT_URL}\nStatic Application Security Test: ${SONARQUBE_URL}/dashboard?id=${GITHUB_GROUP}-${GITHUB_PROJECT}"
-      }
-    }
-    stage('SAST Quality Gate') {
-      steps {
-        container('maven') {
-          sh "date"
-//          timeout(time: 10, unit: 'MINUTES') {
-//              waitForQualityGate abortPipeline: true
-//            }
-        }
-        // mattermostSend channel: "${MATTERMOST_CHANNEL}", endpoint: "${MATTERMOST_WEBHOOK}", message: "Job: ${JOB_NAME} \nStage: ${STAGE_NAME}\nBuild: ${BUILD_URL}\nCommit: ${GITHUB_PROJECT_URL}\nQuality Gate: ${SONARQUBE_URL}/dashboard?id=${GITHUB_GROUP}-${GITHUB_PROJECT}"
-      }
-    }    
+
     stage('Package Image') {
       steps {
         container(name: 'kaniko-nexus', shell: '/busybox/sh') {
@@ -189,22 +167,6 @@ spec:
         }
         }
         mattermostSend channel: "${MATTERMOST_CHANNEL}", endpoint: "${MATTERMOST_WEBHOOK}", message: "Job: ${JOB_NAME} \nStage: ${STAGE_NAME}\nBuild: ${BUILD_URL}\nCommit: ${GITHUB_PROJECT_URL}\nArtifact: ${NEXUS_ARTIFACT_URL}"
-      }
-    }
-    stage('Scan Image') {
-      steps {
-        container(name: 'kaniko-quay', shell: '/busybox/sh') {
-          dir('complete') {
-            withEnv(['PATH+EXTRA=/busybox']) {
-              retry(3) {
-              sh '''#!/busybox/sh
-              /kaniko/executor --whitelist-var-run --context `pwd` --destination ${QUAY_DOCKER_TAG}; rm -rf /usr/bin/mvn
-              '''
-            }
-          }
-        }
-        }
-        // mattermostSend channel: "${MATTERMOST_CHANNEL}", endpoint: "${MATTERMOST_WEBHOOK}", message: "Job: ${JOB_NAME} \nStage: ${STAGE_NAME}\nBuild: ${BUILD_URL}\nCommit: ${GITHUB_PROJECT_URL}\nArtifact: ${NEXUS_ARTIFACT_URL}"
       }
     }
     stage('Deploy Dev') {
