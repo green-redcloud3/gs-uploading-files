@@ -5,7 +5,7 @@ kind: List
 metadata: {}
 items:
 - apiVersion: apps.openshift.io/v1
-  kind: DeploymentConfig
+  kind: Deployment
   metadata:
     labels:
       app: green-redcloud3-gs-uploading-files-__BRANCH__
@@ -17,14 +17,13 @@ items:
   spec:
     replicas: 1
     selector:
-      deploymentconfig: green-redcloud3-gs-uploading-files-__BRANCH__
+      matchLabels:
+        app: green-redcloud3-gs-uploading-files-__BRANCH__
     template:
       metadata:
         labels:
           app: green-redcloud3-gs-uploading-files-__BRANCH__
           release: green-redcloud3-gs-uploading-files-__BRANCH__
-          deploymentconfig: green-redcloud3-gs-uploading-files-__BRANCH__
-          version: v1
       spec:
         imagePullSecrets:
         - name: docker-registry-credentials
