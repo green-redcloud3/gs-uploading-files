@@ -8,27 +8,27 @@ items:
   kind: Deployment
   metadata:
     labels:
-      app: green-redcloud3-gs-uploading-files-__BRANCH__
-      chart: green-redcloud3-gs-uploading-files-__BRANCH__-0.0.1
+      app: CHANGE_ME-CHANGE_ME-__BRANCH__
+      chart: CHANGE_ME-CHANGE_ME-__BRANCH__-0.0.1
       heritage: Tiller
-      release: green-redcloud3-gs-uploading-files-__BRANCH__
-    name: green-redcloud3-gs-uploading-files-__BRANCH__
+      release: CHANGE_ME-CHANGE_ME-__BRANCH__
+    name: CHANGE_ME-CHANGE_ME-__BRANCH__
     namespace: __PROJECT__
   spec:
     replicas: 1
     selector:
       matchLabels:
-        app: green-redcloud3-gs-uploading-files-__BRANCH__
+        app: CHANGE_ME-CHANGE_ME-__BRANCH__
     template:
       metadata:
         labels:
-          app: green-redcloud3-gs-uploading-files-__BRANCH__
-          release: green-redcloud3-gs-uploading-files-__BRANCH__
+          app: CHANGE_ME-CHANGE_ME-__BRANCH__
+          release: CHANGE_ME-CHANGE_ME-__BRANCH__
       spec:
         imagePullSecrets:
         - name: docker-registry-credentials
         containers:
-          - name: green-redcloud3-gs-uploading-files-__BRANCH__
+          - name: CHANGE_ME-CHANGE_ME-__BRANCH__
             image: "__IMAGE_TAG__"
             imagePullPolicy: "Always"
             ports:
@@ -50,12 +50,12 @@ items:
   kind: Service
   metadata:
     labels:
-      app: green-redcloud3-gs-uploading-files-__BRANCH__
-      chart: green-redcloud3-gs-uploading-files-__BRANCH__-0.0.1
+      app: CHANGE_ME-CHANGE_ME-__BRANCH__
+      chart: CHANGE_ME-CHANGE_ME-__BRANCH__-0.0.1
       heritage: Tiller
-      release: green-redcloud3-gs-uploading-files-__BRANCH__
+      release: CHANGE_ME-CHANGE_ME-__BRANCH__
       version: v1
-    name: green-redcloud3-gs-uploading-files-__BRANCH__
+    name: CHANGE_ME-CHANGE_ME-__BRANCH__
     namespace: __PROJECT__
   spec:
     type: "ClusterIP"
@@ -65,5 +65,5 @@ items:
         protocol: TCP
         targetPort: 8080
     selector:
-      app: green-redcloud3-gs-uploading-files-__BRANCH__
-      release: green-redcloud3-gs-uploading-files-__BRANCH__
+      app: CHANGE_ME-CHANGE_ME-__BRANCH__
+      release: CHANGE_ME-CHANGE_ME-__BRANCH__
