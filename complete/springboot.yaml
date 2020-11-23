@@ -4,31 +4,32 @@ items:
 kind: List
 metadata: {}
 items:
-- apiVersion: apps/v1
-  kind: Deployment
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
   metadata:
     labels:
-      app: CHANGE_ME-CHANGE_ME-__BRANCH__
-      chart: CHANGE_ME-CHANGE_ME-__BRANCH__-0.0.1
+      app: green-redcloud3-gs-uploading-files-__BRANCH__
+      chart: green-redcloud3-gs-uploading-files-__BRANCH__-0.0.1
       heritage: Tiller
-      release: CHANGE_ME-CHANGE_ME-__BRANCH__
-    name: CHANGE_ME-CHANGE_ME-__BRANCH__
+      release: green-redcloud3-gs-uploading-files-__BRANCH__
+    name: green-redcloud3-gs-uploading-files-__BRANCH__
     namespace: __PROJECT__
   spec:
     replicas: 1
     selector:
-      matchLabels:
-        app: CHANGE_ME-CHANGE_ME-__BRANCH__
+      deploymentconfig: green-redcloud3-gs-uploading-files-__BRANCH__
     template:
       metadata:
         labels:
-          app: CHANGE_ME-CHANGE_ME-__BRANCH__
-          release: CHANGE_ME-CHANGE_ME-__BRANCH__
+          app: green-redcloud3-gs-uploading-files-__BRANCH__
+          release: green-redcloud3-gs-uploading-files-__BRANCH__
+          deploymentconfig: green-redcloud3-gs-uploading-files-__BRANCH__
+          version: v1
       spec:
         imagePullSecrets:
         - name: docker-registry-credentials
         containers:
-          - name: CHANGE_ME-CHANGE_ME-__BRANCH__
+          - name: green-redcloud3-gs-uploading-files-__BRANCH__
             image: "__IMAGE_TAG__"
             imagePullPolicy: "Always"
             ports:
@@ -50,12 +51,12 @@ items:
   kind: Service
   metadata:
     labels:
-      app: CHANGE_ME-CHANGE_ME-__BRANCH__
-      chart: CHANGE_ME-CHANGE_ME-__BRANCH__-0.0.1
+      app: green-redcloud3-gs-uploading-files-__BRANCH__
+      chart: green-redcloud3-gs-uploading-files-__BRANCH__-0.0.1
       heritage: Tiller
-      release: CHANGE_ME-CHANGE_ME-__BRANCH__
+      release: green-redcloud3-gs-uploading-files-__BRANCH__
       version: v1
-    name: CHANGE_ME-CHANGE_ME-__BRANCH__
+    name: green-redcloud3-gs-uploading-files-__BRANCH__
     namespace: __PROJECT__
   spec:
     type: "ClusterIP"
@@ -65,5 +66,60 @@ items:
         protocol: TCP
         targetPort: 8080
     selector:
-      app: CHANGE_ME-CHANGE_ME-__BRANCH__
-      release: CHANGE_ME-CHANGE_ME-__BRANCH__
+      app: green-redcloud3-gs-uploading-files-__BRANCH__
+      release: green-redcloud3-gs-uploading-files-__BRANCH__
+
+- apiVersion: extensions/v1beta1
+  kind: Ingress
+  metadata:
+    annotations:
+      haproxy.router.openshift.io/timeout: 11m
+    labels:
+      app: __PROJECT__-green-redcloud3-gs-uploading-files-__BRANCH__
+    name: __PROJECT__-green-redcloud3-gs-uploading-files-__BRANCH__
+    namespace: istio-system
+  spec:
+    tls:
+    - hosts:
+      - "green-redcloud3-gs-uploading-files-__BRANCH__.__PROJECT__.demo.k10s.net"
+      secretName: "demo-k10s-net-crt"
+    rules:
+    - host: green-redcloud3-gs-uploading-files-__BRANCH__.__PROJECT__.demo.k10s.net
+      http:
+        paths:
+        - path: /
+          backend:
+            serviceName: istio-ingressgateway
+            servicePort: 80
+
+- apiVersion: networking.istio.io/v1alpha3
+  kind: VirtualService
+  metadata:
+    name: green-redcloud3-gs-uploading-files-__BRANCH__
+    namespace: __PROJECT__
+  spec:
+    hosts:
+    - "green-redcloud3-gs-uploading-files-__BRANCH__.__PROJECT__.demo.k10s.net"
+    gateways:
+    - __PROJECT__-istio-gateway
+    http:
+    - match:
+      - uri:
+          prefix: /
+      route:
+      - destination:
+          host: green-redcloud3-gs-uploading-files-__BRANCH__
+          port:
+            number: 80
+
+- apiVersion: networking.istio.io/v1alpha3
+  kind: DestinationRule
+  metadata:
+    name: green-redcloud3-gs-uploading-files-__BRANCH__
+    namespace: __PROJECT__
+  spec:
+    host: green-redcloud3-gs-uploading-files-__BRANCH__
+    subsets:
+    - name: v1
+      labels:
+        version: v1            
